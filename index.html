@@ -81,43 +81,53 @@ margin-bottom: 6px;
   background: rgba(255,255,255,0.95);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  padding: 12px 16px;
   z-index: 1000;
   display: flex;
-  flex-wrap: wrap;              /* enable wrapping */
-  gap: 12px;
+  flex-direction: column;       /* stack vertically */
+  gap: 8px;
   align-items: center;
-  justify-content: center;      /* center items */
-  max-width: 95vw;              /* keep within screen width */
-  box-sizing: border-box;       /* ensure padding is included */
+  justify-content: center;
+  width: 90vw;
+  max-width: 300px;
+  padding: 8px 12px;
+  box-sizing: border-box;
 }
 
-.photo-booth-controls button, .photo-booth-controls select {
-
-font-family: 'Montserrat', Arial, sans-serif;
-
-font-size: 1rem;
-
-padding: 8px 16px;
-
-border-radius: 6px;
-
-border: 1px solid #a3b8e6;
-
-background: #fff;
-
-color: #1a4c7c;
-
-cursor: pointer;
-
-transition: background 0.2s;
-
+.photo-booth-controls button,
+.photo-booth-controls select {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  width: auto;
+  border: 1px solid #a3b8e6;
+  background: #fff;
+  color: #1a4c7c;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .photo-booth-controls button:hover {
 
 background: #e6ecfa;
 
+}
+
+@media (min-width: 600px) {
+  .photo-booth-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 90vw;
+    padding: 12px 20px;
+  }
+
+  .photo-booth-controls button,
+  .photo-booth-controls select {
+    width: auto;
+    flex: 1 1 auto;
+    max-width: 200px;
+  }
 }
 
 .overlay-logo {
@@ -344,11 +354,17 @@ Loading...
 
 </select>
 
-<button id="toggle-bg-effect" onclick="toggleBackgroundEffect()">Show Petals</button>
+<button id="toggle-bg-effect" onclick="toggleBackgroundEffect()" title="Toggle falling petals effect">
+  🌸 Petals
+</button>
 
-<button id="toggle-petal-type" onclick="togglePetalType()">Show Dollars</button>
+<button id="toggle-petal-type" onclick="togglePetalType()" title="Toggle falling dollar bills">
+  💵 Dollars
+</button>
 
-<button onclick="toggleHelp()">Help</button>
+<button onclick="toggleHelp()" title="How to use the photo booth">
+  ❓ Help
+</button>
 
 </div>
 
