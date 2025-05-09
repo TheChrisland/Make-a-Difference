@@ -83,13 +83,13 @@ margin-bottom: 6px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   z-index: 1000;
   display: flex;
-  flex-direction: column;       /* stack vertically */
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
   justify-content: center;
-  width: 90vw;
-  max-width: 300px;
-  padding: 8px 12px;
+  width: 92vw;
+  max-width: 360px;
+  padding: 10px 12px;
   box-sizing: border-box;
 }
 
@@ -97,15 +97,20 @@ margin-bottom: 6px;
 .photo-booth-controls select {
   font-family: 'Montserrat', Arial, sans-serif;
   font-size: 0.9rem;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 6px;
-  width: auto;
   border: 1px solid #a3b8e6;
   background: #fff;
   color: #1a4c7c;
   cursor: pointer;
   transition: background 0.2s;
+  width: 30%;          /* 🔹 Allow up to 3 per row */
+  min-width: 80px;
+  max-width: 100px;
+  flex: 1 1 auto;
+  text-align: center;
 }
+
 
 .photo-booth-controls button:hover {
 
@@ -229,8 +234,10 @@ border-radius: 50%;
 width: 54px;
 
 height: 54px;
+padding:0;
+border-radius: 50%;
 
-font-size: 2rem;
+font-size: 1.6rem;
 
 display: flex;
 
@@ -355,15 +362,15 @@ Loading...
 </select>
 
 <button id="toggle-bg-effect" onclick="toggleBackgroundEffect()" title="Toggle falling petals effect">
-  🌸 Petals
+  🌸 
 </button>
 
 <button id="toggle-petal-type" onclick="togglePetalType()" title="Toggle falling dollar bills">
-  💵 Dollars
+  💵 
 </button>
 
 <button onclick="toggleHelp()" title="How to use the photo booth">
-  ❓ Help
+  ❓ 
 </button>
 
 </div>
