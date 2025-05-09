@@ -35,83 +35,61 @@ background: #a3b8e6;
 }
 
 .header {
-
-position: fixed;
-
-top: 0;
-
-left: 0;
-
-width: 100vw;
-
-background: #a3b8e6;
-
-color: #1a4c7c;
-
-text-align: center;
-
-font-family: 'Playfair Display', serif;
-
-font-size: 2.2rem;
-
-font-weight: 700;
-
-letter-spacing: 0.05em;
-
-padding: 18px 0 8px 0;
-
-z-index: 1000;
-
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background: #a3b8e6;
+  color: #1a4c7c;
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; /* smaller */
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 8px 0 4px 0; /* tighter */
+  z-index: 1000;
 }
+
 
 .subtitle {
 
 font-family: 'Montserrat', Arial, sans-serif;
 
-font-size: 1.1rem;
+font-size: 0.9rem;
 
 color: #1a4c7c;
 
-margin-bottom: 8px;
+margin-bottom: 4px;
 
 }
 
 .event-details {
 
-font-size: 1rem;
+font-size: 0.8rem;
 
 color: #1a4c7c;
 
-margin-bottom: 10px;
+margin-bottom: 6px;
 
 }
 
 .photo-booth-controls {
-
-position: fixed;
-
-bottom: 20px;
-
-left: 50%;
-
-transform: translateX(-50%);
-
-background: rgba(255,255,255,0.95);
-
-border-radius: 12px;
-
-box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-
-padding: 12px 24px;
-
-z-index: 1000;
-
-display: flex;
-
-gap: 16px;
-
-align-items: center;
-
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.95);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 12px 16px;
+  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;              /* enable wrapping */
+  gap: 12px;
+  align-items: center;
+  justify-content: center;      /* center items */
+  max-width: 95vw;              /* keep within screen width */
+  box-sizing: border-box;       /* ensure padding is included */
 }
 
 .photo-booth-controls button, .photo-booth-controls select {
@@ -322,11 +300,12 @@ display: block;
 
 <body>
 
-<div class="header">
-  Make a Difference Luncheon
-  <div class="subtitle">A Celebration of Houston's Women Leaders</div>
-  <div class="event-details">Friday, May 9, 2025 &nbsp;|&nbsp; Royal Sonesta</div>
-</div>
+  <div class="header">
+    <img src="images/Make-A-Difference.png" style="max-width: 10%; height: auto;">
+    <div class="subtitle">A Celebration of Houston's Women Leaders</div>
+    <div class="event-details">Friday, May 9, 2025 &nbsp;|&nbsp; Royal Sonesta</div>
+  </div>
+  
 <img class="overlay-logo shimmer" src="logo-placeholder.png" alt="Event Logo Overlay" />
 
 <div id="loading-indicator" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 10px; z-index: 9999;">
@@ -347,7 +326,7 @@ Loading...
 
 <option value="butterfly">Butterfly</option>
 
-<option value="tiara">Tiara (Placeholder)</option>
+<option value="tiara">Tiara</option>
 
 <option value="necklace">Pixel Glasses</option>
 
@@ -464,7 +443,7 @@ Loading...
 
 <a-entity id="ar-banner" position="0 2 0">
   <a-plane color="#a3b8e6" width="2.5" height="0.5" position="0 0 0"></a-plane>
-  <a-text value="Make a Difference Luncheon" color="#1a4c7c" position="0 0.13 0.01" align="center" width="2.2"></a-text>
+  <a-image src="images/Make-A-Difference.png" width="2.5" height="0.5" position="0 0 0.01"></a-image>
   <a-text value="A Celebration of Houston's Women Leaders" color="#1a4c7c" position="0 0.03 0.01" align="center" width="1.8"></a-text>
   <a-text value="Friday, May 9, 2025 | Royal Sonesta" color="#1a4c7c" position="0 -0.08 0.01" align="center" width="1.5"></a-text>
 </a-entity>
