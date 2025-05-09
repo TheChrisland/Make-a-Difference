@@ -454,15 +454,32 @@ Loading...
 <a-entity mindar-face-occluder scale="1.2 1.2 1.2"></a-entity>
 <a-entity id="user-accessory" mindar-face-target="anchorIndex: 10" visible="false">
 
-<a-gltf-model id="floral-crown-entity" class="floral-crown-entity" src="#floralCrown" position="0 -1.6 -0.3" rotation="-10 0 0" scale="5 4 5" visible="true"></a-gltf-model>
+  <!-- Floral Crown -->
+  <a-entity id="floral-crown-wrapper" position="0 -1.6 -0.3" rotation="-10 0 0" scale="5 4 5">
+    <a-gltf-model id="floral-crown-entity" src="#floralCrown" position="0 0.8 0" visible="true"></a-gltf-model>
+  </a-entity>
 
-<a-gltf-model id="bouquet-entity" class="bouquet-entity" src="#bouquet" position="-1 -2.5 0" rotation="0 0 -45" scale="1.5 1.5 1.5" visible="false"></a-gltf-model>
+  <!-- Bouquet -->
+  <a-entity id="bouquet-wrapper" position="-1 -2.5 0" rotation="0 0 -45" scale="1.5 1.5 1.5">
+    <a-gltf-model id="bouquet-entity" src="#bouquet" position="0 0.8 0" visible="false"></a-gltf-model>
+  </a-entity>
 
-<a-gltf-model id="butterfly-entity" class="butterfly-entity" src="#butterfly" position="-1 -1 0" rotation="40 65 10" scale="1 1 1" visible="false"></a-gltf-model>
+  <!-- Butterfly -->
+  <a-entity id="butterfly-wrapper" position="-1 -1 0" rotation="40 65 10" scale="1 1 1">
+    <a-gltf-model id="butterfly-entity" src="#butterfly" position="0 0.7 0" visible="false"></a-gltf-model>
+  </a-entity>
 
-<a-gltf-model id="tiara-entity" class="tiara-entity" src="#tiara" position="0 -0.2 -0.4" rotation="-1.5 0 0" scale="1.5 1.5 1.5" visible="false"></a-gltf-model>
+  <!-- Tiara -->
+  <a-entity id="tiara-wrapper" position="0 -0.2 -0.4" rotation="-1.5 0 0" scale="1.5 1.5 1.5">
+    <a-gltf-model id="tiara-entity" src="#tiara" position="0 0.6 0" visible="false"></a-gltf-model>
+  </a-entity>
 
-<a-gltf-model id="necklace-entity" class="necklace-entity" src="#necklace" position="-19.87 -.8 29.35" rotation="0 45 0" scale="0.95 0.95 0.95" visible="false"></a-gltf-model>
+  <!-- Necklace -->
+  <a-entity id="necklace-wrapper" position="-19.87 -.8 29.35" rotation="0 45 0" scale="0.95 0.95 0.95">
+    <a-gltf-model id="necklace-entity" src="#necklace" position="0 0.5 0" visible="false"></a-gltf-model>
+  </a-entity>
+
+</a-entity>
 
 <a-entity id="ar-banner" position="0 2 0">
   <a-plane color="#a3b8e6" width="2.5" height="0.5" position="0 0 0"></a-plane>
