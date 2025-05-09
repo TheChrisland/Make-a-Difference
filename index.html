@@ -393,6 +393,38 @@ Loading...
 
 <button onclick="toggleHelp()">Got it!</button>
 
+<button onclick="togglePositionControls()" style="margin-left: 10px;">Adjust Model Position</button>
+
+
+</div>
+
+<div id="position-controls" style="
+  display: none;
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.97);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  padding: 12px;
+  z-index: 1500;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  width: 90%;
+  max-width: 300px;
+">
+  <div style="font-weight: 600; margin-bottom: 8px;">Adjust Accessory Position</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 6px;">
+    <button onclick="adjustModel('x', -0.05)" style="flex: 1 1 30%;">← X</button>
+    <button onclick="adjustModel('x', 0.05)" style="flex: 1 1 30%;">→ X</button>
+    <button onclick="adjustModel('y', 0.05)" style="flex: 1 1 30%;">↑ Y</button>
+    <button onclick="adjustModel('y', -0.05)" style="flex: 1 1 30%;">↓ Y</button>
+    <button onclick="adjustModel('z', -0.05)" style="flex: 1 1 30%;">← Z</button>
+    <button onclick="adjustModel('z', 0.05)" style="flex: 1 1 30%;">→ Z</button>
+  </div>
+  <div id="model-position-display" style="font-size: 0.8rem; color: #1a4c7c; margin: 8px 0;"></div>
+  <button onclick="togglePositionControls()" style="width: 100%;">Done</button>
 </div>
 
 <div id="countdown-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(163,184,230,0.85); color:#1a4c7c; font-family:'Playfair Display',serif; font-size:7vw; text-align:center; z-index:3000; align-items:center; justify-content:center; flex-direction:column;">
@@ -529,7 +561,62 @@ const dollarTextures = ['#dollar1', '#dollar100', '#dollar100d', '#dollar100m'];
 let petalInterval = null;
 let dollarInterval = null;
 
+function getCurrentWrapper() {
+  const types = ['floral-crown', 'bouquet', 'butterfly', 'tiara', 'necklace'];
+  for (let t of types) {
+    const wrapper = document.getElementById(`${t}-wrapper`);
+    const el = document.getElementById(`${t}-entity`);
+    if (el && el.getAttribute('visible')) return wrapper;
+  }
+  return null;
+}
 
+function adjustModel(axis, delta) {
+  const wrapper = getCurrentWrapper();
+  if (!wrapper) return;
+
+  const pos = wrapper.getAttribute('position');
+  if (!pos) return;
+
+  pos[axis] += delta;
+  wrapper.setAttribute('position', pos);
+
+  const display = document.getElementById('model-position-display');
+  if (display) {
+    display.textContent = `x=${pos.x.toFixed(2)} y=${pos.y.toFixed(2)} z=${pos.z.toFixed(2)}`;
+  }
+}
+
+function togglePositionControls() {
+  const panel = document.getElementById('position-controls');
+  if (!panel) {
+    console.error('Position controls panel not found');
+    return;
+  }
+  
+  const isVisible = panel.style.display === 'block';
+  panel.style.display = isVisible ? 'none' : 'block';
+  
+  // Update position display when showing controls
+  if (!isVisible) {
+    const wrapper = getCurrentWrapper();
+    if (wrapper) {
+      const pos = wrapper.getAttribute('position');
+      const display = document.getElementById('model-position-display');
+      if (display && pos) {
+        display.textContent = `x=${pos.x.toFixed(2)} y=${pos.y.toFixed(2)} z=${pos.z.toFixed(2)}`;
+      }
+    }
+  }
+  
+  // Close help modal when opening position controls
+  if (!isVisible) {
+    const helpModal = document.getElementById('help-modal');
+    if (helpModal) {
+      helpModal.style.display = 'none';
+    }
+  }
+}
 
 function changeModelType(type) {
 
@@ -947,151 +1034,6 @@ loadingIndicator.classList.add('active');
 sceneEl.addEventListener('renderstart', function() {
 
 this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-
-});
-
-
-
-// Add gesture controls
-
-function getCurrentModel() {
-
-const types = ['floral-crown', 'bouquet', 'butterfly', 'tiara', 'necklace'];
-
-for (let t of types) {
-  const wrapper = document.getElementById(`${t}-wrapper`);
-const el = document.getElementById(`${t}-entity`);
-
-if (el && el.getAttribute('visible')) return wrapper;
-
-}
-
-return null;
-
-}
-
-
-
-// Touch controls
-
-let isDragging = false;
-let dragStart = { x: 0, y: 0 };
-let initialPos = new THREE.Vector3();
-let initialScale = new THREE.Vector3();
-let zStartY = 0;
-let initialZ = 0;
-
-sceneEl.addEventListener('touchstart', function (e) {
-  const wrapper = getCurrentWrapper();
-  if (!wrapper) return;
-
-  if (e.touches.length === 1) {
-    isDragging = true;
-    dragStart.x = e.touches[0].clientX;
-    dragStart.y = e.touches[0].clientY;
-    initialPos.copy(wrapper.object3D.position);
-  } else if (e.touches.length === 2) {
-    const model = getCurrentWrapper();
-    zStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-    initialZ = model.object3D.position.z;
-    initialScale.copy(model.object3D.scale);
-  }
-});
-
-sceneEl.addEventListener('touchmove', function (e) {
-  const wrapper = getCurrentWrapper();
-  if (!wrapper) return;
-
-  if (e.touches.length === 1 && isDragging) {
-    const dx = (e.touches[0].clientX - dragStart.x) * 0.0002;
-    const dy = (e.touches[0].clientY - dragStart.y) * 0.0002;
-    wrapper.object3D.position.set(
-      initialPos.x + dx,
-      initialPos.y - dy,
-      initialPos.z
-    );
-  } else if (e.touches.length === 2) {
-    const zCurrentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-    const deltaY = zCurrentY - zStartY;
-    const zChange = deltaY * 0.005;
-    wrapper.object3D.position.z = initialZ + zChange;
-
-    // Optional: pinch scale
-    const dist = Math.hypot(
-      e.touches[0].clientX - e.touches[1].clientX,
-      e.touches[0].clientY - e.touches[1].clientY
-    );
-    const scaleFactor = dist / 200; // adjust if needed
-    wrapper.object3D.scale.set(
-      initialScale.x * scaleFactor,
-      initialScale.y * scaleFactor,
-      initialScale.z * scaleFactor
-    );
-  }
-});
-
-sceneEl.addEventListener('touchend', function (e) {
-  isDragging = false;
-});
-
-
-
-
-// Mouse controls
-
-let mouseDown = false;
-
-let mouseStart = {x: 0, y: 0};
-
-let mouseInitialPosition = {x: 0, y: 0, z: 0};
-
-
-
-sceneEl.addEventListener('mousedown', function(e) {
-
-const arModel = getCurrentModel();
-
-if (!arModel) return;
-
-mouseDown = true;
-
-mouseStart.x = e.clientX;
-
-mouseStart.y = e.clientY;
-
-mouseInitialPosition = arModel.getAttribute('position');
-
-});
-
-
-
-sceneEl.addEventListener('mousemove', function(e) {
-
-const arModel = getCurrentModel();
-
-if (!arModel || !mouseDown) return;
-
-const dx = (e.clientX - mouseStart.x) * 0.0002;
-
-const dy = (e.clientY - mouseStart.y) * 0.0002;
-
-arModel.setAttribute('position', {
-
-x: mouseInitialPosition.x + dx,
-
-y: mouseInitialPosition.y - dy,
-
-z: mouseInitialPosition.z
-
-});
-
-});
-
-
-
-sceneEl.addEventListener('mouseup', function(e) {
-
-mouseDown = false;
 
 });
 
@@ -1592,6 +1534,7 @@ document.querySelector('a-scene').addEventListener('click', function(e) {
     }
   }
 });
+
 
 </script>
 
