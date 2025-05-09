@@ -452,6 +452,8 @@ Loading...
 
 <a-camera active="false" position="0 0 0"></a-camera>
 <a-entity mindar-face-occluder scale="1.2 1.2 1.2"></a-entity>
+
+<a-entity id="stabilized-accessory" look-at="[camera]"></a-entity>
 <a-entity id="user-accessory" mindar-face-target="anchorIndex: 10" visible="false">
 
   <!-- Floral Crown -->
@@ -479,6 +481,7 @@ Loading...
     <a-gltf-model id="necklace-entity" src="#necklace" position="0 0.5 0" visible="false"></a-gltf-model>
   </a-entity>
 
+</a-entity>
 </a-entity>
 
 <a-entity id="ar-banner" position="0 2 0">
@@ -956,10 +959,10 @@ function getCurrentModel() {
 const types = ['floral-crown', 'bouquet', 'butterfly', 'tiara', 'necklace'];
 
 for (let t of types) {
-
+  const wrapper = document.getElementById(`${t}-wrapper`);
 const el = document.getElementById(`${t}-entity`);
 
-if (el && el.getAttribute('visible')) return el;
+if (el && el.getAttribute('visible')) return wrapper;
 
 }
 
@@ -971,114 +974,66 @@ return null;
 
 // Touch controls
 
+let isDragging = false;
+let dragStart = { x: 0, y: 0 };
+let initialPos = new THREE.Vector3();
+let initialScale = new THREE.Vector3();
 let zStartY = 0;
 let initialZ = 0;
 
+sceneEl.addEventListener('touchstart', function (e) {
+  const wrapper = getCurrentWrapper();
+  if (!wrapper) return;
 
-sceneEl.addEventListener('touchstart', function(e) {
-
-const arModel = getCurrentModel();
-
-if (!arModel) return;
-
-if (e.touches.length === 1) {
-
-isDragging = true;
-
-dragStart.x = e.touches[0].clientX;
-
-dragStart.y = e.touches[0].clientY;
-
-initialPosition = arModel.getAttribute('position');
-
-} else if (e.touches.length === 2) {
-
-initialDistance = Math.hypot(
-
-e.touches[0].clientX - e.touches[1].clientX,
-
-e.touches[0].clientY - e.touches[1].clientY
-
-);
-
-initialScale = arModel.getAttribute('scale');
-
-// Z-axis tracking start
-zStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-initialZ = arModel.getAttribute('position').z;
-
-}
-
+  if (e.touches.length === 1) {
+    isDragging = true;
+    dragStart.x = e.touches[0].clientX;
+    dragStart.y = e.touches[0].clientY;
+    initialPos.copy(wrapper.object3D.position);
+  } else if (e.touches.length === 2) {
+    const model = getCurrentWrapper();
+    zStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    initialZ = model.object3D.position.z;
+    initialScale.copy(model.object3D.scale);
+  }
 });
 
+sceneEl.addEventListener('touchmove', function (e) {
+  const wrapper = getCurrentWrapper();
+  if (!wrapper) return;
 
+  if (e.touches.length === 1 && isDragging) {
+    const dx = (e.touches[0].clientX - dragStart.x) * 0.0002;
+    const dy = (e.touches[0].clientY - dragStart.y) * 0.0002;
+    wrapper.object3D.position.set(
+      initialPos.x + dx,
+      initialPos.y - dy,
+      initialPos.z
+    );
+  } else if (e.touches.length === 2) {
+    const zCurrentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    const deltaY = zCurrentY - zStartY;
+    const zChange = deltaY * 0.005;
+    wrapper.object3D.position.z = initialZ + zChange;
 
-sceneEl.addEventListener('touchmove', function(e) {
-
-const arModel = getCurrentModel();
-
-if (!arModel) return;
-
-if (e.touches.length === 1 && isDragging) {
-
-const dx = (e.touches[0].clientX - dragStart.x) * 0.0015;
-
-const dy = (e.touches[0].clientY - dragStart.y) * 0.0015;
-
-arModel.setAttribute('position', {
-
-x: initialPosition.x + dx,
-
-y: initialPosition.y - dy,
-
-z: initialPosition.z
-
+    // Optional: pinch scale
+    const dist = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    const scaleFactor = dist / 200; // adjust if needed
+    wrapper.object3D.scale.set(
+      initialScale.x * scaleFactor,
+      initialScale.y * scaleFactor,
+      initialScale.z * scaleFactor
+    );
+  }
 });
 
-} else if (e.touches.length === 2) {
-
-const currentDistance = Math.hypot(
-
-e.touches[0].clientX - e.touches[1].clientX,
-
-e.touches[0].clientY - e.touches[1].clientY
-
-);
-
-const scale = currentDistance / initialDistance;
-
-arModel.setAttribute('scale', {
-
-x: initialScale.x * scale,
-
-y: initialScale.y * scale,
-
-z: initialScale.z * scale
-
+sceneEl.addEventListener('touchend', function (e) {
+  isDragging = false;
 });
 
-// Z-axis movement based on vertical motion of two fingers
-const zCurrentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-  const deltaY = zCurrentY - zStartY;
-  const zChange = deltaY * 0.005; // sensitivity
-  const pos = arModel.getAttribute('position');
-  arModel.setAttribute('position', {
-    x: pos.x,
-    y: pos.y,
-    z: initialZ + zChange
-  });
-
-}
-
-});
-
-
-
-sceneEl.addEventListener('touchend', function(e) {
-
-isDragging = false;
-
-});
 
 
 
